@@ -73,7 +73,13 @@ int XilinxMapParser::parse()
 						map_val = (cnt[5] == '0') ? BIT_ONE: BIT_ZERO;
 					/* fill usercode now instead of waiting for fuse placement */
 					} else if (!strncmp(cnt.c_str(), "user", 4)) {
-						int idx = stoi(cnt.substr(5));
+						int idx = 0;
+						if (cnt.size() > 5) {
+							idx = stoi(cnt.substr(5));
+						/* handle 5 char codes */
+						} else if (cnt.size() == 5 && cnt[4] >= '0' && cnt[4] <= '9') {
+							idx = cnt[4] - '0';
+						}
 						map_val = ((_usercode >> idx) & 0x01) ? BIT_ONE : BIT_ZERO;
 					} else {
 						printf("unknown %s %s\n", cnt.c_str(), line.c_str());
